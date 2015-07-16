@@ -22,7 +22,7 @@ import android.widget.TextView;
 /**
  * A menu that expands vertically revealing clickable submenus. The expanded menu is displayed in front of other components of the layout.
  * You can add as many submenus as you want but be keep in mind that Google's design guidelines recommend a maximum of six submenus fot this type of menu.
- * <p/>
+ * <p>
  * Created by lcampos on 2015-05-29.
  */
 public class FloatingMenu extends RelativeLayout {
@@ -43,11 +43,12 @@ public class FloatingMenu extends RelativeLayout {
     private float mMenuElevation = DEFAULT_ELEVATION;
     private MenuClickListener mOnMenuClickListener;
 
-    public interface MenuClickListener{
+    public interface MenuClickListener {
         /**
          * Called when the user opens or closes the menu
+         *
          * @param coverView The main view with which the user interacts to open and close the menu
-         * @param isOpen Whether the menu is open or closed
+         * @param isOpen    Whether the menu is open or closed
          */
         public void onMenuClick(View coverView, boolean isOpen);
     }
@@ -94,8 +95,7 @@ public class FloatingMenu extends RelativeLayout {
             } finally {
                 a.recycle();
             }
-        }
-        else{
+        } else {
             createCoverView(transparentColor, null, 0, null);
         }
     }
@@ -136,11 +136,11 @@ public class FloatingMenu extends RelativeLayout {
     /**
      * Sets the submenu views in the center of the menu
      */
-    private void centralizeSubmenu(View view){
+    private void centralizeSubmenu(View view) {
         LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, mCoverView.getId());
-        params.setMargins(0,0,0, mCoverView.getHeight()/2 - view.getHeight()/2);
+        params.setMargins(0, 0, 0, mCoverView.getHeight() / 2 - view.getHeight() / 2);
         view.setLayoutParams(params);
     }
 
@@ -202,7 +202,7 @@ public class FloatingMenu extends RelativeLayout {
             }
             mLockedCLick = true;
 
-            if(mOnMenuClickListener != null){
+            if (mOnMenuClickListener != null) {
                 mOnMenuClickListener.onMenuClick(mCoverView, mIsOpen);
             }
 
@@ -226,7 +226,8 @@ public class FloatingMenu extends RelativeLayout {
                 anim.setDuration(mAnimationDuration);
                 anim.addListener(new Animator.AnimatorListener() {
                     @Override
-                    public void onAnimationStart(Animator animation) {}
+                    public void onAnimationStart(Animator animation) {
+                    }
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -234,10 +235,12 @@ public class FloatingMenu extends RelativeLayout {
                     }
 
                     @Override
-                    public void onAnimationCancel(Animator animation) {}
+                    public void onAnimationCancel(Animator animation) {
+                    }
 
                     @Override
-                    public void onAnimationRepeat(Animator animation) {}
+                    public void onAnimationRepeat(Animator animation) {
+                    }
                 });
                 anim.start();
             }
@@ -396,6 +399,7 @@ public class FloatingMenu extends RelativeLayout {
 
     /**
      * The elevation of the menu, in pixels. The submenus' elevation is slightly smaller than the menu's.
+     *
      * @return The menu's elevation
      */
     public float getMenuElevation() {
@@ -404,6 +408,7 @@ public class FloatingMenu extends RelativeLayout {
 
     /**
      * Sets the menu and submenus elevation. The submenus' elevation is slightly smaller than the menu's.
+     *
      * @param menuElevation
      */
     public FloatingMenu setMenuElevation(float menuElevation) {
@@ -413,6 +418,7 @@ public class FloatingMenu extends RelativeLayout {
 
     /**
      * Sets a listener that will be triggered when the user opens or closes the menu
+     *
      * @param onMenuClickListener
      */
     public FloatingMenu setOnMenuClickListener(MenuClickListener onMenuClickListener) {

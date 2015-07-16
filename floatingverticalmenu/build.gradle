@@ -30,3 +30,5 @@ dependencies {
     testCompile 'com.squareup.assertj:assertj-android:1.0.0'
     testCompile 'org.assertj:assertj-core:3.0.0'
 }
+
+apply from: '../mvn-upload.gradle'

@@ -8,7 +8,11 @@ An animated, customizable floating menu for Android.
 
 ##Adding to your project
 
-	code
+Add the dependency to your build.gradle:
+
+	dependencies {
+		compile 'com.samsaodev.vertical-floating-menu:library:1.0'
+	}
 
 ##Usage
 ###From layout
