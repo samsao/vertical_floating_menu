@@ -16,7 +16,6 @@
         app:fmBackground="@drawable/dark_blue_circle_button_click"
         app:fmIcon="@android:drawable/ic_menu_add"
         android:layout_gravity="right"
-        android:layout_marginRight="10dp"
-        app:fmElevation="10dp"/>
+        app:fmElevation="@dimen/menu_elevation"/>
 
 </FrameLayout>
