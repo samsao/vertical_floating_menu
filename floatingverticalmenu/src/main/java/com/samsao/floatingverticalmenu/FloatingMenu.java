@@ -14,18 +14,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
  * A menu that expands vertically revealing clickable submenus. The expanded menu is displayed in front of other components of the layout.
  * You can add as many submenus as you want but be keep in mind that Google's design guidelines recommend a maximum of six submenus fot this type of menu.
- * <p>
+ * <p/>
  * Created by lcampos on 2015-05-29.
  */
-public class FloatingMenu extends RelativeLayout {
+public class FloatingMenu extends FrameLayout {
 
     private static final String STATIC_VIEW = "StaticView";
     private static final float DEFAULT_ELEVATION = 10f;
@@ -36,12 +36,14 @@ public class FloatingMenu extends RelativeLayout {
     private int mSubMenuBetweenPadding = 300;
     private boolean mIsOpen;
     private boolean mLockedCLick;
-    private RelativeLayout mCoverView;
+    private FrameLayout mCoverView;
     private ImageView mCoverImageView;
     private TextView mCoverTextView;
-    private LayoutParams mOriginalLayoutParams;
     private float mMenuElevation = DEFAULT_ELEVATION;
     private MenuClickListener mOnMenuClickListener;
+
+    private int mOriginalWidth;
+    private int mOriginalHeight;
 
     public interface MenuClickListener {
         /**
@@ -101,8 +103,8 @@ public class FloatingMenu extends RelativeLayout {
     }
 
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
 
         /**
          * Allows the expansion of the menu outside of the view
@@ -113,8 +115,9 @@ public class FloatingMenu extends RelativeLayout {
         /**
          * Saves original layout params
          */
-        if (mOriginalLayoutParams == null) {
-            mOriginalLayoutParams = (LayoutParams) getLayoutParams();
+        if (mOriginalWidth == 0 && mOriginalHeight == 0) {
+            mOriginalWidth = getLayoutParams().width;
+            mOriginalHeight = getLayoutParams().height;
         }
 
         for (int i = 0; i < getChildCount(); i++) {
@@ -125,21 +128,16 @@ public class FloatingMenu extends RelativeLayout {
          * Adapts the layout to allow vertical expansion, maintaining other attributes
          */
         setCoverViewLayoutParams();
-        LayoutParams params = new LayoutParams(mOriginalLayoutParams.width, ViewGroup.LayoutParams.MATCH_PARENT);
-        int[] rules = mOriginalLayoutParams.getRules();
-        for (int i = 0; i < rules.length; i++) {
-            params.addRule(i, rules[i]);
-        }
-        setLayoutParams(params);
+
+        getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
     }
 
     /**
      * Sets the submenu views in the center of the menu
      */
     private void centralizeSubmenu(View view) {
-        LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
-        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, mCoverView.getId());
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        params.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
         params.setMargins(0, 0, 0, mCoverView.getHeight() / 2 - view.getHeight() / 2);
         view.setLayoutParams(params);
     }
@@ -254,7 +252,7 @@ public class FloatingMenu extends RelativeLayout {
      */
     private void createCoverView(int menuIcon, String menuTitle, int menuTitleTextColor, Drawable menuBackground) {
         LayoutInflater inflater = LayoutInflater.from(getContext());
-        mCoverView = (RelativeLayout) inflater.inflate(R.layout.cover_view, null);
+        mCoverView = (FrameLayout) inflater.inflate(R.layout.cover_view, null);
 
         setCoverViewLayoutParams();
 
@@ -286,15 +284,14 @@ public class FloatingMenu extends RelativeLayout {
      * Sets the layout params for the view that covers the submenus.
      */
     private void setCoverViewLayoutParams() {
-        RelativeLayout.LayoutParams params = null;
-        if (mOriginalLayoutParams != null) {
-            params = new LayoutParams(mOriginalLayoutParams.width, mOriginalLayoutParams.height);
+        FrameLayout.LayoutParams params = null;
+        if (mOriginalWidth != 0 && mOriginalHeight != 0) {
+            params = new FrameLayout.LayoutParams(mOriginalWidth, mOriginalHeight);
         } else {
-            params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+            params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
         }
+        params.gravity = Gravity.CENTER | Gravity.BOTTOM;
 
-        params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         mCoverView.setLayoutParams(params);
     }
 
