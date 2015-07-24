@@ -6,5 +6,6 @@
         <attr name="fmIcon" format="reference"/>
         <attr name="fmBackground" format="reference"/>
         <attr name="fmElevation" format="dimension"/>
+        <attr name="fmTextSize" format="dimension"/>
     </declare-styleable>
 </resources>

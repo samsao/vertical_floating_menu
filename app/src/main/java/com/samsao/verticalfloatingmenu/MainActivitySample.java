@@ -24,14 +24,16 @@ public class MainActivitySample extends Activity {
                 .addSubMenu(android.R.drawable.ic_menu_call, new Action("Calling Jeffrey..."))
                 .addSubMenu(android.R.drawable.ic_menu_manage, new Action("Opening settings..."))
                 .setSubMenuBetweenPadding(250)
+                .setMenuExtraMargin(50)
+                .setMenuTextColor(getResources().getColor(R.color.green))
                 .setOnMenuClickListener(new FloatingMenu.MenuClickListener() {
                     @Override
                     public void onMenuClick(View coverView, boolean isOpen) {
                         RotateAnimation rotateAnim = null;
                         if (isOpen) {
-                            rotateAnim = new RotateAnimation(45, 0, coverView.getHeight()/2, coverView.getWidth()/2);
+                            rotateAnim = new RotateAnimation(45, 0, coverView.getHeight() / 2, coverView.getWidth() / 2);
                         } else {
-                            rotateAnim = new RotateAnimation(0, 45, coverView.getHeight()/2, coverView.getWidth()/2);
+                            rotateAnim = new RotateAnimation(0, 45, coverView.getHeight() / 2, coverView.getWidth() / 2);
                         }
                         rotateAnim.setDuration(200);
                         rotateAnim.setInterpolator(new OvershootInterpolator());

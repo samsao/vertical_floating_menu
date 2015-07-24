@@ -13,8 +13,8 @@
         android:id="@+id/floatingMenu"
         android:layout_width="75dp"
         android:layout_height="75dp"
-        app:fmBackground="@drawable/dark_blue_circle_button_click"
         app:fmIcon="@android:drawable/ic_menu_add"
+        app:fmBackground="@drawable/dark_blue_circle_button_click"
         android:layout_gravity="right"
         app:fmElevation="@dimen/menu_elevation"/>
 

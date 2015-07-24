@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,25 +23,32 @@ import android.widget.TextView;
 /**
  * A menu that expands vertically revealing clickable submenus. The expanded menu is displayed in front of other components of the layout.
  * You can add as many submenus as you want but be keep in mind that Google's design guidelines recommend a maximum of six submenus fot this type of menu.
- * <p/>
+ * <p>
  * Created by lcampos on 2015-05-29.
  */
 public class FloatingMenu extends FrameLayout {
 
     private static final String STATIC_VIEW = "StaticView";
     private static final float DEFAULT_ELEVATION = 10f;
+    private static final int DEFAULT_TEXT_SIZE = 14;
 
+    private FrameLayout mCoverView;
+    private ImageView mCoverImageView;
+    private TextView mCoverTextView;
     private int mSubMenuBackgroundResource;
     private Interpolator mAnimationInterpolator;
     private int mAnimationDuration = 400;
     private int mSubMenuBetweenPadding = 300;
+    private int mMenuExtraMargin = 0;
+
     private boolean mIsOpen;
     private boolean mLockedCLick;
-    private FrameLayout mCoverView;
-    private ImageView mCoverImageView;
-    private TextView mCoverTextView;
-    private float mMenuElevation = DEFAULT_ELEVATION;
+
     private MenuClickListener mOnMenuClickListener;
+
+    private float mMenuElevation = DEFAULT_ELEVATION;
+    private float mTextSize = DEFAULT_TEXT_SIZE;
+    private int mTextColor;
 
     private int mOriginalWidth;
     private int mOriginalHeight;
@@ -82,23 +90,26 @@ public class FloatingMenu extends FrameLayout {
          */
         Drawable menuBackground = null;
         int transparentColor = getResources().getColor(android.R.color.transparent);
+        mTextColor = transparentColor;
+
         if (attrs != null) {
             TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.FloatingMenu, 0, 0);
             try {
                 String menuTitle = a.getString(R.styleable.FloatingMenu_fmText);
-                int menuTitleTextColor = a.getColor(R.styleable.FloatingMenu_fmTextColor, transparentColor);
+                mTextColor = a.getColor(R.styleable.FloatingMenu_fmTextColor, transparentColor);
                 int menuIcon = a.getResourceId(R.styleable.FloatingMenu_fmIcon, transparentColor);
                 int backgroundResource = a.getResourceId(R.styleable.FloatingMenu_fmBackground, 0);
                 menuBackground = backgroundResource != 0 ? ContextCompat.getDrawable(context, backgroundResource) : null;
                 mMenuElevation = a.getDimension(R.styleable.FloatingMenu_fmElevation, DEFAULT_ELEVATION);
+                mTextSize = a.getDimensionPixelSize(R.styleable.FloatingMenu_fmTextSize, DEFAULT_TEXT_SIZE);
 
-                createCoverView(menuIcon, menuTitle, menuTitleTextColor, menuBackground);
+                createCoverView(menuIcon, menuTitle, menuBackground);
 
             } finally {
                 a.recycle();
             }
         } else {
-            createCoverView(transparentColor, null, 0, null);
+            createCoverView(transparentColor, null, null);
         }
     }
 
@@ -207,7 +218,10 @@ public class FloatingMenu extends FrameLayout {
             /**
              * Performs a translation animation for each submenu
              */
-            int distance = 0;
+            int distance = mMenuExtraMargin;
+            if(getChildCount() == 1) { //No animation
+                mLockedCLick = false;
+            }
             for (int i = getChildCount() - 1; i >= 0; i--) {
                 Object tag = getChildAt(i).getTag();
                 if (tag != null && tag.toString().equals(STATIC_VIEW)) {
@@ -250,7 +264,7 @@ public class FloatingMenu extends FrameLayout {
      * Creates the view that will be shown as the main menu, the one which opens the submenus with a click.
      * It is created as an inflated view containing a textview and an imageview to be placed covering the submenus.
      */
-    private void createCoverView(int menuIcon, String menuTitle, int menuTitleTextColor, Drawable menuBackground) {
+    private void createCoverView(int menuIcon, String menuTitle, Drawable menuBackground) {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         mCoverView = (FrameLayout) inflater.inflate(R.layout.cover_view, null);
 
@@ -266,10 +280,9 @@ public class FloatingMenu extends FrameLayout {
 
         if (menuTitle != null) {
             mCoverTextView.setText(menuTitle);
-            if (menuTitleTextColor != 0) {
-                mCoverTextView.setTextColor(menuTitleTextColor);
-            }
         }
+        mCoverTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
+        mCoverTextView.setTextColor(mTextColor);
 
         mCoverView.setOnClickListener(mExpandCollapseClickListener);
         mCoverView.setBackground(menuBackground);
@@ -313,6 +326,25 @@ public class FloatingMenu extends FrameLayout {
     }
 
     /**
+     * Removes a submenu
+     *
+     * @param position The position of the submenu
+     */
+    public void removeSubmenu(int position) {
+        removeViewAt(position + 1);
+    }
+
+    /**
+     * Removes all submenus from the menu
+     */
+    public void removeAllSubmenus() {
+        int childCount = getChildCount();
+        for(int i = childCount - 1; i > 0; i--) {
+            removeViewAt(i);
+        }
+    }
+
+    /**
      * Gets the background set for the submenus
      *
      * @return The resource identifier of the drawable set for the submenus' background
@@ -353,12 +385,30 @@ public class FloatingMenu extends FrameLayout {
     /**
      * Sets a display text to be shown on the menu's main view
      *
-     * @param menuText      The display text
+     * @param menuText The display text
+     */
+    public FloatingMenu setMenuText(CharSequence menuText) {
+        mCoverTextView.setText(menuText);
+        return this;
+    }
+
+    /**
+     * Sets the color of the display text
+     *
      * @param menuTextColor The display text's color
      */
-    public FloatingMenu setMenuText(CharSequence menuText, int menuTextColor) {
-        mCoverTextView.setText(menuText);
+    public FloatingMenu setMenuTextColor(int menuTextColor) {
         mCoverTextView.setTextColor(menuTextColor);
+        return this;
+    }
+
+    /**
+     * Sets the size of the display text
+     *
+     * @param menuTextSize The display text's size
+     */
+    public FloatingMenu setMenuTextSize(int menuTextSize) {
+        mCoverTextView.setTextSize(menuTextSize);
         return this;
     }
 
@@ -395,12 +445,14 @@ public class FloatingMenu extends FrameLayout {
     }
 
     /**
-     * The elevation of the menu, in pixels. The submenus' elevation is slightly smaller than the menu's.
+     * Sets the extra margin between the menu and the submenus
      *
-     * @return The menu's elevation
+     * @param menuExtraMargin
+     * @return
      */
-    public float getMenuElevation() {
-        return mMenuElevation;
+    public FloatingMenu setMenuExtraMargin(int menuExtraMargin) {
+        mMenuExtraMargin = menuExtraMargin;
+        return this;
     }
 
     /**
@@ -422,4 +474,6 @@ public class FloatingMenu extends FrameLayout {
         this.mOnMenuClickListener = onMenuClickListener;
         return this;
     }
+
+
 }
