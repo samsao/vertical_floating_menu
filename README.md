@@ -125,3 +125,8 @@ floatingMenu.setOnMenuClickListener(new FloatingMenu.MenuClickListener() {
     }
 });
 ~~~
+
+
+## License
+
+Vertical Floating Menu is released under the MIT license. See the LICENSE file for details.
