@@ -7,10 +7,6 @@ import org.robolectric.Robolectric;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Created by lcampos on 2015-06-04.
- */
-
 @RunWith(RobolectricGradleTestRunner.class)
 public class TestActivityTest {
 
