@@ -6,9 +6,6 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.res.Fs;
 
-/**
- * Created by lcampos on 2015-06-04.
- */
 public class RobolectricGradleTestRunner extends RobolectricTestRunner {
 
     public static final int EMULATE_SDK_VERSION = Build.VERSION_CODES.JELLY_BEAN_MR2; //Robolectric support API level 18,17, 16, but not 19
