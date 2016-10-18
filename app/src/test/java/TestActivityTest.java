@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotEquals;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class TestActivityTest {
@@ -19,8 +19,7 @@ public class TestActivityTest {
 
     @Test
     public void shouldSuccess() {
-        assertThat(activity).isNotNull();
-
+        assertNotEquals(activity, null);
     }
 
 
