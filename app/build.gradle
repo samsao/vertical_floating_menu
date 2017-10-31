@@ -25,7 +25,4 @@ dependencies {
     implementation project(':floatingverticalmenu')
 
     implementation 'com.android.support:appcompat-v7:27.0.0'
-
-    testImplementation 'org.robolectric:robolectric:3.4.2'
-    testImplementation 'junit:junit:4.12'
 }
